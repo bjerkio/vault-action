@@ -1,4 +1,5 @@
 name: 'Vault Action'
+author: 'Bjerk AS'
 description: 'Export secrets from Vault into Github Actions'
 branding:
   icon: bookmark

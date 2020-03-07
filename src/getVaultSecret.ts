@@ -1,16 +1,17 @@
-import { getInput, setOutput } from '@actions/core';
-import nodeVault from 'node-vault';
+import { getInput } from '@actions/core';
+import * as nodeVault from 'node-vault';
 import * as authMethod from './authMethods';
+import { transformOutput } from './transformOutput';
 
 export default async (): Promise<void> => {
-    const vault = nodeVault({
-      endpoint: getInput('endpoint'),
-    });
+  const vault = nodeVault({
+    endpoint: getInput('endpoint', { required: true }),
+  });
 
-    // TODO: Add support for other authentication methods
-    await authMethod.GithubAuthMethod(vault);
+  // TODO: Add support for other authentication methods
+  await authMethod.GithubAuthMethod(vault);
 
-    const path = getInput('path');
-    const output = await vault.read(path);
-    setOutput('secret', output);
-}
+  const path = getInput('path');
+  const { data } = await vault.read(path, { required: true });
+  transformOutput(data.data);
+};

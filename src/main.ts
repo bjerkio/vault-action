@@ -1,10 +1,13 @@
-import { setFailed } from '@actions/core';
+import { setFailed, group } from '@actions/core';
 import getVaultSecret from './getVaultSecret';
 
-(async (): Promise<void> => {
+export const run = (async (): Promise<void> => {
   try {
-    await getVaultSecret();
+    await group('Get Vault Secrets', getVaultSecret);
   } catch (error) {
-    setFailed(error);
+    const message = error.message || 'Failed';
+    setFailed(message);
   }
-})();
+});
+
+run();

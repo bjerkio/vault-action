@@ -1,31 +1,39 @@
 {
   "name": "vault-action",
-  "version": "0.0.0",
+  "version": "1.1.6",
   "description": "Export secrets from Vault into Github Actions",
   "engines": {
     "node": ">= 12.13 <13"
   },
   "devDependencies": {
+    "@types/faker": "^4.1.10",
     "@types/jest": "~25.1.2",
     "@types/node": "~12.12.27",
     "@typescript-eslint/eslint-plugin": "~2.19.2",
     "@typescript-eslint/parser": "~2.19.2",
+    "@zeit/ncc": "^0.21.1",
     "eslint": "~6.8.0",
     "eslint-config-prettier": "~6.10.0",
     "eslint-plugin-jest": "~23.7.0",
+    "faker": "^4.1.0",
     "jest": "~25.1.0",
+    "nock": "^12.0.2",
     "prettier": "~1.19.1",
     "rimraf": "~3.0.2",
     "ts-jest": "~25.2.0",
+    "ts-loader": "^6.2.1",
     "tsutils": "~3.17.0",
-    "typescript": "~3.8.2"
+    "typescript": "~3.8.2",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
     "build": "tsc -p tsconfig.release.json",
+    "postbuild": "ncc build build/src/main.js -o dist",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "jest --coverage",
+    "test": "jest --coverage src/**/*",
     "test:watch": "jest --watch"
   },
   "author": "Bjerk AS <office@bjerk.io>",
