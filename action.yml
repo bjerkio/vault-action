@@ -1,5 +1,8 @@
 name: 'Vault Action'
 description: 'Export secrets from Vault into Github Actions'
+branding:
+  icon: bookmark
+  color: gray-dark
 inputs:
     endpoint:
         description: 'Vault Endpoint'
