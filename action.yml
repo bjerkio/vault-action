@@ -1,0 +1,18 @@
+name: 'Vault Action'
+description: 'Export secrets from Vault into Github Actions'
+inputs:
+    endpoint:
+        description: 'Vault Endpoint'
+        required: true
+    path:
+        description: 'Path to secret from Vault'
+        required: true
+    githubToken:
+        description: 'Github Token to authenticate with'
+        required: false
+outputs:
+    secret:
+        description: 'The output from secret'
+runs:
+    using: 'node12'
+    main: 'dist/index.js'
