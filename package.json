@@ -16,7 +16,6 @@
     "jest": "~25.1.0",
     "prettier": "~1.19.1",
     "rimraf": "~3.0.2",
-    "semantic-release": "^17.0.4",
     "ts-jest": "~25.2.0",
     "tsutils": "~3.17.0",
     "typescript": "~3.8.2"
@@ -34,6 +33,7 @@
   "dependencies": {
     "@actions/core": "^1.2.3",
     "@actions/github": "^2.1.1",
+    "node-vault": "^0.9.13",
     "tslib": "~1.10.0"
   }
 }
