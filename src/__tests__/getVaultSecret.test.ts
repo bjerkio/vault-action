@@ -1,15 +1,22 @@
 /* eslint @typescript-eslint/ban-ts-ignore: 0 */
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 jest.mock('@actions/core');
+jest.mock('../authMethods', () => ({
+  default: {
+    test: jest.fn(),
+  },
+}));
 jest.mock('node-vault', () => (): any => ({
   githubLogin: jest.fn(),
-  read: (): any => ({
-    data: {
+  read: (): any => {
+    return {
       data: {
-        hello: 'there'
-      }
-    }
-  }),
+        data: {
+          hello: 'there',
+        },
+      },
+    };
+  },
 }));
 
 import { getInput } from '@actions/core';
@@ -19,11 +26,26 @@ describe('', () => {
   beforeEach(() => {
     // @ts-ignore
     getInput.mockClear();
-  })
+  });
   it('should construct', async () => {
     // @ts-ignore
-    getInput.mockReturnValue('http://test.com');
+    getInput.mockImplementation(name => {
+      if (name === 'authMethod') {
+        return 'test';
+      }
+      return 'http://test.com';
+    });
     await getVaultSecret();
     expect(getInput).toHaveBeenCalledTimes(3);
+  });
+  it('should fail if authMethod does not exists', async () => {
+    // @ts-ignore
+    getInput.mockImplementation(name => {
+      if (name === 'authMethod') {
+        return 'not-exists';
+      }
+      return 'http://test.com';
+    });
+    await expect(getVaultSecret()).rejects.toThrow();
   })
-})
+});
