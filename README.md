@@ -25,16 +25,30 @@ jobs:
 
 **Required** Path to secret from Vault 
 
-## Auth Method
+### `authMethod`
+
+**Required** Type of authentication method. See below. 
+
+## Auth Methods
 
 Currently, we only support Github Auth Method. We do appreciate help!
 Submit a pull request if you wanna see more methods!
+
+### Token
+
+```
+...
+with:
+    authMethod: 'token'
+    token: ${{ secrets.VAULT_TOKEN }}
+```
 
 ### Github Token
 
 ```
 ...
 with:
+    authMethod: 'github'
     githubToken: ${{ secrets.GH_TOKEN }}
 ```
 
@@ -44,7 +58,7 @@ that Vault verifies the account (it needs to know _who_ is signing in.).
 # Contribute
 
 Feel free to open issues and pull requests. We appreciate all the help we can get!
-At the moment, the most valuable are adding new auth methods, such as token and approle. We also really want to add E2E testing!
+At the moment, the most valuable are adding new auth methods, such as approle. We also really want to add E2E testing!
 
 # Thanks too…
 

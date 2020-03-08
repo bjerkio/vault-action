@@ -11,9 +11,9 @@ inputs:
     path:
         description: 'Path to secret from Vault'
         required: true
-    githubToken:
-        description: 'Github Token to authenticate with'
-        required: false
+    authMethod:
+        description: 'Type of authentication method'
+        required: true
 outputs:
     secret:
         description: 'The output from secret'

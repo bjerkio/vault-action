@@ -1,6 +1,6 @@
 import { getInput } from '@actions/core';
 import * as nodeVault from 'node-vault';
-import * as authMethod from './authMethods';
+import authMethods from './authMethods';
 import { transformOutput } from './transformOutput';
 
 export default async (): Promise<void> => {
@@ -8,11 +8,13 @@ export default async (): Promise<void> => {
     endpoint: getInput('endpoint', { required: true }),
   });
 
-  /**
-   * @todo Add support for other authentication methods
-   * @body Github is the only supported auth method.
-   */
-  await authMethod.GithubAuthMethod(vault);
+  const authMethod = getInput('authMethod', {required: true});
+
+  if (authMethods[authMethod]) {
+    await authMethods[authMethod];
+  } else {
+    throw new Error('Auth Method not found.');
+  }
 
   const path = getInput('path');
   const { data } = await vault.read(path, { required: true });
