@@ -1,3 +1,8 @@
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/bjerkio/vault-action.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/bjerkio/vault-action/context:javascript)
+[![codecov](https://codecov.io/gh/bjerkio/vault-action/branch/master/graph/badge.svg)](https://codecov.io/gh/bjerkio/vault-action)
+![Build & Deploy](https://github.com/bjerkio/vault-action/workflows/Build%20&%20Deploy/badge.svg?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c5fefa8af6f5a5466d2a/maintainability)](https://codeclimate.com/github/bjerkio/vault-action/maintainability)
+
 # Vault Actions
 
 A Github Action that pulls secrets from HashiCrop Vault.
