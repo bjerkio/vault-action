@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/bjerkio/vault-action/compare/v1.0.1...v1.0.2) (2020-03-08)
+
+
+### Bug Fixes
+
+* AuthMethod issue ([68dad77](https://github.com/bjerkio/vault-action/commit/68dad77fe7f265143fbb245dd123493b91d6adad))
+
 ## [1.0.1](https://github.com/bjerkio/vault-action/compare/v1.0.0...v1.0.1) (2020-03-08)
 
 

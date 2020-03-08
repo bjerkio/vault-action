@@ -183,7 +183,7 @@ exports.default = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     });
     const authMethod = core_1.getInput('authMethod', { required: true });
     if (authMethods_1.default[authMethod]) {
-        yield authMethods_1.default[authMethod];
+        yield authMethods_1.default[authMethod](vault);
     }
     else {
         throw new Error('Auth Method not found.');
