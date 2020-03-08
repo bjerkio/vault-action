@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/bjerkio/vault-action/compare/v1.0.0...v1.0.1) (2020-03-08)
+
+
+### Bug Fixes
+
+* Update to latest deps ([fb7aed3](https://github.com/bjerkio/vault-action/commit/fb7aed389e112bcadb08bbdb43db54be99437ab1))
+
 # 1.0.0 (2020-03-08)
 
 

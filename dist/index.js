@@ -968,7 +968,23 @@ module.exports = {
 /* 65 */,
 /* 66 */,
 /* 67 */,
-/* 68 */,
+/* 68 */
+/***/ (function(module) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+
+/***/ }),
 /* 69 */
 /***/ (function(module) {
 
@@ -1266,7 +1282,161 @@ function write(key, options) {
 /* 81 */,
 /* 82 */,
 /* 83 */,
-/* 84 */,
+/* 84 */
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+var isBuffer = __webpack_require__(68)
+
+module.exports = flatten
+flatten.flatten = flatten
+flatten.unflatten = unflatten
+
+function keyIdentity (key) {
+  return key
+}
+
+function flatten (target, opts) {
+  opts = opts || {}
+
+  const delimiter = opts.delimiter || '.'
+  const maxDepth = opts.maxDepth
+  const transformKey = opts.transformKey || keyIdentity
+  const output = {}
+
+  function step (object, prev, currentDepth) {
+    currentDepth = currentDepth || 1
+    Object.keys(object).forEach(function (key) {
+      const value = object[key]
+      const isarray = opts.safe && Array.isArray(value)
+      const type = Object.prototype.toString.call(value)
+      const isbuffer = isBuffer(value)
+      const isobject = (
+        type === '[object Object]' ||
+        type === '[object Array]'
+      )
+
+      const newKey = prev
+        ? prev + delimiter + transformKey(key)
+        : transformKey(key)
+
+      if (!isarray && !isbuffer && isobject && Object.keys(value).length &&
+        (!opts.maxDepth || currentDepth < maxDepth)) {
+        return step(value, newKey, currentDepth + 1)
+      }
+
+      output[newKey] = value
+    })
+  }
+
+  step(target)
+
+  return output
+}
+
+function unflatten (target, opts) {
+  opts = opts || {}
+
+  const delimiter = opts.delimiter || '.'
+  const overwrite = opts.overwrite || false
+  const transformKey = opts.transformKey || keyIdentity
+  const result = {}
+
+  const isbuffer = isBuffer(target)
+  if (isbuffer || Object.prototype.toString.call(target) !== '[object Object]') {
+    return target
+  }
+
+  // safely ensure that the key is
+  // an integer.
+  function getkey (key) {
+    const parsedKey = Number(key)
+
+    return (
+      isNaN(parsedKey) ||
+      key.indexOf('.') !== -1 ||
+      opts.object
+    ) ? key
+      : parsedKey
+  }
+
+  function addKeys (keyPrefix, recipient, target) {
+    return Object.keys(target).reduce(function (result, key) {
+      result[keyPrefix + delimiter + key] = target[key]
+
+      return result
+    }, recipient)
+  }
+
+  function isEmpty (val) {
+    const type = Object.prototype.toString.call(val)
+    const isArray = type === '[object Array]'
+    const isObject = type === '[object Object]'
+
+    if (!val) {
+      return true
+    } else if (isArray) {
+      return !val.length
+    } else if (isObject) {
+      return !Object.keys(val).length
+    }
+  }
+
+  target = Object.keys(target).reduce((result, key) => {
+    const type = Object.prototype.toString.call(target[key])
+    const isObject = (type === '[object Object]' || type === '[object Array]')
+    if (!isObject || isEmpty(target[key])) {
+      result[key] = target[key]
+      return result
+    } else {
+      return addKeys(
+        key,
+        result,
+        flatten(target[key], opts)
+      )
+    }
+  }, {})
+
+  Object.keys(target).forEach(function (key) {
+    const split = key.split(delimiter).map(transformKey)
+    let key1 = getkey(split.shift())
+    let key2 = getkey(split[0])
+    let recipient = result
+
+    while (key2 !== undefined) {
+      const type = Object.prototype.toString.call(recipient[key1])
+      const isobject = (
+        type === '[object Object]' ||
+        type === '[object Array]'
+      )
+
+      // do not write over falsey, non-undefined values if overwrite is false
+      if (!overwrite && !isobject && typeof recipient[key1] !== 'undefined') {
+        return
+      }
+
+      if ((overwrite && !isobject) || (!overwrite && recipient[key1] == null)) {
+        recipient[key1] = (
+          typeof key2 === 'number' &&
+          !opts.object ? [] : {}
+        )
+      }
+
+      recipient = recipient[key1]
+      if (split.length > 0) {
+        key1 = getkey(split.shift())
+        key2 = getkey(split[0])
+      }
+    }
+
+    // unflatten again for 'messy objects'
+    recipient[key1] = unflatten(target[key], opts)
+  })
+
+  return result
+}
+
+
+/***/ }),
 /* 85 */
 /***/ (function(module) {
 
@@ -1830,15 +2000,22 @@ module.exports = request;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = __webpack_require__(470);
-exports.transformOutput = (data, name) => {
-    if (typeof data === 'object') {
-        for (const key of Object.keys(data)) {
-            exports.transformOutput(data[key], name ? `${name}_${key}` : key);
-        }
+const flat = __webpack_require__(84);
+exports.outputData = (name, value) => {
+    core_1.setOutput(name || 'secret', value);
+    core_1.debug(`✔ ${name} => outputs.${name}`);
+};
+exports.transformOutput = (data) => {
+    if (typeof data !== 'object') {
+        exports.outputData('secret', data);
+        return;
     }
-    else {
-        core_1.setOutput(name || 'secret', data);
-        core_1.debug(`✔ ${name} => outputs.${name}`);
+    const flatObject = flat(data, {
+        delimiter: '_',
+    });
+    for (const name of Object.keys(flatObject)) {
+        const value = flatObject[name];
+        exports.outputData(name, value);
     }
 };
 //# sourceMappingURL=transformOutput.js.map
@@ -16598,6 +16775,8 @@ var __asyncValues;
 var __makeTemplateObject;
 var __importStar;
 var __importDefault;
+var __classPrivateFieldGet;
+var __classPrivateFieldSet;
 (function (factory) {
     var root = typeof global === "object" ? global : typeof self === "object" ? self : typeof this === "object" ? this : {};
     if (typeof define === "function" && define.amd) {
@@ -16668,10 +16847,11 @@ var __importDefault;
     };
 
     __awaiter = function (thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
             function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     };
@@ -16709,14 +16889,15 @@ var __importDefault;
     };
 
     __values = function (o) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
         if (m) return m.call(o);
-        return {
+        if (o && typeof o.length === "number") return {
             next: function () {
                 if (o && i >= o.length) o = void 0;
                 return { value: o && o[i++], done: !o };
             }
         };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     };
 
     __read = function (o, n) {
@@ -16797,6 +16978,21 @@ var __importDefault;
         return (mod && mod.__esModule) ? mod : { "default": mod };
     };
 
+    __classPrivateFieldGet = function (receiver, privateMap) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to get private field on non-instance");
+        }
+        return privateMap.get(receiver);
+    };
+
+    __classPrivateFieldSet = function (receiver, privateMap, value) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to set private field on non-instance");
+        }
+        privateMap.set(receiver, value);
+        return value;
+    }
+
     exporter("__extends", __extends);
     exporter("__assign", __assign);
     exporter("__rest", __rest);
@@ -16817,6 +17013,8 @@ var __importDefault;
     exporter("__makeTemplateObject", __makeTemplateObject);
     exporter("__importStar", __importStar);
     exporter("__importDefault", __importDefault);
+    exporter("__classPrivateFieldGet", __classPrivateFieldGet);
+    exporter("__classPrivateFieldSet", __classPrivateFieldSet);
 });
 
 
