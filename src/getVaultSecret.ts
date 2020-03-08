@@ -8,7 +8,10 @@ export default async (): Promise<void> => {
     endpoint: getInput('endpoint', { required: true }),
   });
 
-  // TODO: Add support for other authentication methods
+  /**
+   * @todo Add support for other authentication methods
+   * @body Github is the only supported auth method.
+   */
   await authMethod.GithubAuthMethod(vault);
 
   const path = getInput('path');

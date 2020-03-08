@@ -7,7 +7,10 @@ export const transformOutput = (data: any, name?: string): void => {
       transformOutput(data[key], name ? `${name}_${key}` : key);
     }
   } else {
-    // TODO: Add environment variable
+    /**
+     * @todo Add so that environment variables are exported
+     * @body Currently it only setOutputs and debugs all outputs
+     */
     setOutput(name || 'secret', data);
     debug(`✔ ${name} => outputs.${name}`);
   }
