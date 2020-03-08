@@ -1,3 +1,11 @@
+# 1.0.0 (2020-03-08)
+
+
+### Features
+
+* Add Semantic Release and Github Actions ([735ca9b](https://github.com/bjerkio/vault-action/commit/735ca9b55508e2bd990a7fb26ca60cfa9602e6b8))
+* First non-working version ([b3f3e0e](https://github.com/bjerkio/vault-action/commit/b3f3e0e79120e4defac54102259408f83c82ab46))
+
 # [1.2.0](https://github.com/bjerkio/vault-action/compare/v1.1.11...v1.2.0) (2020-03-08)
 
 

@@ -184,7 +184,7 @@ exports.default = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     yield authMethod.GithubAuthMethod(vault);
     const path = core_1.getInput('path');
     const { data } = yield vault.read(path, { required: true });
-    transformOutput_1.transformOutput(data);
+    transformOutput_1.transformOutput(data.data);
 });
 //# sourceMappingURL=getVaultSecret.js.map
 
