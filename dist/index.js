@@ -175,13 +175,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = __webpack_require__(422);
 const core_1 = __webpack_require__(470);
 const nodeVault = __webpack_require__(619);
-const authMethod = __webpack_require__(633);
+const authMethods_1 = __webpack_require__(633);
 const transformOutput_1 = __webpack_require__(126);
 exports.default = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const vault = nodeVault({
         endpoint: core_1.getInput('endpoint', { required: true }),
     });
-    yield authMethod.GithubAuthMethod(vault);
+    const authMethod = core_1.getInput('authMethod', { required: true });
+    if (authMethods_1.default[authMethod]) {
+        yield authMethods_1.default[authMethod];
+    }
+    else {
+        throw new Error('Auth Method not found.');
+    }
     const path = core_1.getInput('path');
     const { data } = yield vault.read(path, { required: true });
     transformOutput_1.transformOutput(data.data);
@@ -15503,7 +15509,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = __webpack_require__(422);
 const core_1 = __webpack_require__(470);
 exports.GithubAuthMethod = (vault) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    yield vault.githubLogin({ token: core_1.getInput('githubToken') });
+    yield vault.githubLogin({ token: core_1.getInput('githubToken', { required: true }) });
 });
 //# sourceMappingURL=githubAuthMethod.js.map
 
@@ -24426,7 +24432,20 @@ module.exports = {
 /* 589 */,
 /* 590 */,
 /* 591 */,
-/* 592 */,
+/* 592 */
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(422);
+const core_1 = __webpack_require__(470);
+exports.TokenAuthMethod = (vault) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+    vault.token = core_1.getInput('token', { required: true });
+});
+//# sourceMappingURL=tokenAuthMethod.js.map
+
+/***/ }),
 /* 593 */,
 /* 594 */,
 /* 595 */,
@@ -25176,8 +25195,12 @@ module.exports = require("net");
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = __webpack_require__(422);
-tslib_1.__exportStar(__webpack_require__(375), exports);
+const githubAuthMethod_1 = __webpack_require__(375);
+const tokenAuthMethod_1 = __webpack_require__(592);
+exports.default = {
+    github: githubAuthMethod_1.GithubAuthMethod,
+    token: tokenAuthMethod_1.TokenAuthMethod
+};
 //# sourceMappingURL=index.js.map
 
 /***/ }),
