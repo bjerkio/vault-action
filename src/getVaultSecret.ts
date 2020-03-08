@@ -11,7 +11,7 @@ export default async (): Promise<void> => {
   const authMethod = getInput('authMethod', {required: true});
 
   if (authMethods[authMethod]) {
-    await authMethods[authMethod];
+    await authMethods[authMethod](vault);
   } else {
     throw new Error('Auth Method not found.');
   }
