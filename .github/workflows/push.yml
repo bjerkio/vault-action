@@ -1,10 +1,11 @@
-name: Publish Vault Action
+name: Build & Deploy
 on:
   push:
     branches:
       - master
       - develop
       - staging
+  pull_request:
 jobs:
   up:
     name: Update
