@@ -44,6 +44,6 @@
     "@actions/core": "^1.2.3",
     "@actions/github": "^2.1.1",
     "node-vault": "^0.9.13",
-    "tslib": "~1.10.0"
+    "tslib": "~1.11.1"
   }
 }
