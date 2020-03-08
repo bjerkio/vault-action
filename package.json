@@ -12,6 +12,7 @@
     "@typescript-eslint/eslint-plugin": "~2.19.2",
     "@typescript-eslint/parser": "~2.19.2",
     "@zeit/ncc": "^0.21.1",
+    "codecov": "^3.6.5",
     "eslint": "~6.8.0",
     "eslint-config-prettier": "~6.10.0",
     "eslint-plugin-jest": "~23.7.0",
@@ -34,7 +35,8 @@
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest --coverage src/**/*",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "codecov": "codecov"
   },
   "author": "Bjerk AS <office@bjerk.io>",
   "license": "Apache-2.0",
