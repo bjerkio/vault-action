@@ -6,7 +6,7 @@
     "node": ">= 12.13 <13"
   },
   "devDependencies": {
-    "@types/faker": "^4.1.10",
+    "@types/faker": "^4.1.11",
     "@types/flat": "^5.0.0",
     "@types/jest": "~25.1.4",
     "@types/node": "~12.12.29",
