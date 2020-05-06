@@ -1,0 +1,47 @@
+name: Deploy Website
+on:
+  push:
+    branches:
+      - master
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: scripts/setup-npmrc
+        env:
+          CI: true
+      - run: npm install
+        env:
+          NPM_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Vault Action
+        id: vault
+        uses: bjerkio/vault-action@v1.0.2
+        with:
+          endpoint: "https://my-vault-host.bjerk.io"
+          path: "kv/data/oauth2client/sites"
+          authMethod: github
+          githubToken: ${{ secrets.GH_TOKEN }}
+      - run: npm run build
+        env:
+          NPM_TOKEN: ${{ secrets.GH_TOKEN }}
+          REACT_APP_OAUTH_CLIENT_ID: ${{ steps.vault.outputs.clientId }}
+      - run: npm run test -- --passWithNoTests
+        env:
+          NPM_TOKEN: ${{ secrets.GH_TOKEN }}
+          CI: true
+      - uses: netlify/actions/cli@master
+        with:
+          args: deploy --dir=build/ --prod
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ steps.vault.outputs.netlify_auth_token }}
+          NETLIFY_SITE_ID: ${{ steps.vault.outputs.netlify_site_id }}

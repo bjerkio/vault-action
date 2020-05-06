@@ -80,6 +80,12 @@ with:
 **PS:** You cannot use the built in `GITHUB_TOKEN`. This is caused by the way
 that Vault verifies the account (it needs to know _who_ is signing in.).
 
+# Documentation
+Apart from this README, you can find details and examples of using the SDK in the following places:  
+
+- [Examples](examples/)
+- [Github Actions Documentation](https://help.github.com/en/actions)
+
 # Contribute
 
 Feel free to open issues and pull requests. We appreciate all the help we can get!
