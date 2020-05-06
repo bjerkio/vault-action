@@ -20,6 +20,9 @@ inputs:
     githubToken:
         description: 'Github Token'
         required: true
+    exportVaultSecret:
+        description: 'Export vault secret'
+        required: false
 outputs:
     secret:
         description: 'The output from secret'

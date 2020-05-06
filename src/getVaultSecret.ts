@@ -1,4 +1,4 @@
-import { getInput } from '@actions/core';
+import { getInput, debug } from '@actions/core';
 import * as nodeVault from 'node-vault';
 import authMethods from './authMethods';
 import { transformOutput, outputData } from './transformOutput';
@@ -33,6 +33,7 @@ export default async (): Promise<void> => {
    * Output vault token
    */
   if (exportVaultSecret && exportVaultSecret !== 'false') {
+    debug(`Exporting vault secret: ${vault.token}`);
     outputData('vault_token', vault.token);
   }
 };
