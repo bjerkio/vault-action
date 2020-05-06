@@ -27,12 +27,12 @@ export default async (): Promise<void> => {
     transformOutput(data.data);
   }
 
-  const exportVaultSecret = getInput('exportVaultSecret');
+  const exportVaultToken = getInput('exportVaultToken');
 
   /**
    * Output vault token
    */
-  if (exportVaultSecret && exportVaultSecret !== 'false') {
+  if (exportVaultToken && exportVaultToken !== 'false') {
     debug(`Exporting vault secret: ${vault.token}`);
     outputData('vault_token', vault.token);
   }
