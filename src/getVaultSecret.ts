@@ -1,7 +1,7 @@
 import { getInput } from '@actions/core';
 import * as nodeVault from 'node-vault';
 import authMethods from './authMethods';
-import { transformOutput } from './transformOutput';
+import { transformOutput, outputData } from './transformOutput';
 
 export default async (): Promise<void> => {
   const vault = nodeVault({
@@ -17,6 +17,22 @@ export default async (): Promise<void> => {
   }
 
   const path = getInput('path');
-  const { data } = await vault.read(path, { required: true });
-  transformOutput(data.data);
+
+  if (path) {
+    const { data } = await vault.read(path, { required: true });
+
+    /**
+     * Output configured data
+     */
+    transformOutput(data.data);
+  }
+
+  const exportVaultSecret = getInput('exportVaultSecret');
+
+  /**
+   * Output vault token
+   */
+  if (exportVaultSecret && exportVaultSecret !== 'false') {
+    outputData('vault_token', vault.token);
+  }
 };

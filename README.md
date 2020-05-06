@@ -20,6 +20,22 @@ jobs:
             - run: echo "${{ toJson(steps.vault.outputs.secret) }}" 
 ```
 
+If the data is a JSON object, it will be transformed into multiple
+objects. These are glued together as such:
+
+Example JSON:
+```
+{
+    "info": {
+        "that": {
+            "is": "deep"
+        }
+    }
+}
+```
+
+This will be transformed to `steps.vault.outputs.info_that_is`
+
 ## Input
 
 ### `endpoint`
@@ -28,11 +44,15 @@ jobs:
 
 ### `path`
 
-**Required** Path to secret from Vault 
+Path to secret from Vault 
 
 ### `authMethod`
 
 **Required** Type of authentication method. See below. 
+
+### `exportVaultToken`
+
+If this is set to `true` (default `false`) the vault token will be exported as `vault_token`
 
 ## Auth Methods
 

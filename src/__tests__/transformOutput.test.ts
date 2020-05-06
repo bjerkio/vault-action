@@ -4,7 +4,7 @@ jest.mock('@actions/core');
 import { setOutput, debug } from '@actions/core';
 import randomSimpleObject from '../__fixtures__/randomSimpleObject';
 import randomDeepObject from '../__fixtures__/randomDeepObject';
-import { transformOutput } from '../transformOutput';
+import { transformOutput, outputData } from '../transformOutput';
 
 describe('transformOutput', () => {
   beforeEach(() => {
@@ -12,6 +12,11 @@ describe('transformOutput', () => {
     setOutput.mockClear();
     // @ts-ignore
     debug.mockClear();
+  });
+
+  it('should export secret if name is missing', async () => {
+    outputData(undefined, 'this-is-a-secret');
+    expect(setOutput).toBeCalledWith('secret', 'this-is-a-secret');
   });
 
   it('should tranform an object to multiple outputs', async () => {
