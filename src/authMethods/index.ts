@@ -3,5 +3,5 @@ import { TokenAuthMethod } from './tokenAuthMethod';
 
 export default {
   github: GithubAuthMethod,
-  token: TokenAuthMethod
-}
+  token: TokenAuthMethod,
+};

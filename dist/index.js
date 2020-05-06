@@ -189,8 +189,14 @@ exports.default = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
         throw new Error('Auth Method not found.');
     }
     const path = core_1.getInput('path');
-    const { data } = yield vault.read(path, { required: true });
-    transformOutput_1.transformOutput(data.data);
+    if (path) {
+        const { data } = yield vault.read(path, { required: true });
+        transformOutput_1.transformOutput(data.data);
+    }
+    const exportVaultSecret = core_1.getInput('exportVaultSecret');
+    if (exportVaultSecret && exportVaultSecret !== 'false') {
+        transformOutput_1.outputData('vault_token', vault.token);
+    }
 });
 //# sourceMappingURL=getVaultSecret.js.map
 
@@ -10265,6 +10271,7 @@ module.exports = {
   tokenCreate: {
     method: 'POST',
     path: '/auth/token/create',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -10310,6 +10317,7 @@ module.exports = {
   tokenCreateOrphan: {
     method: 'POST',
     path: '/auth/token/create-orphan',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -10355,6 +10363,7 @@ module.exports = {
   tokenCreateRole: {
     method: 'POST',
     path: '/auth/token/create/{{role_name}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -10532,6 +10541,7 @@ module.exports = {
   tokenRenew: {
     method: 'POST',
     path: '/auth/token/renew',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -10551,6 +10561,7 @@ module.exports = {
   tokenRenewSelf: {
     method: 'POST',
     path: '/auth/token/renew-self',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -10824,11 +10835,11 @@ module.exports = {
       req: {
         type: 'object',
         properties: {
-          secret_id: {
+          secret_id_accessor: {
             type: 'string',
           },
         },
-        required: ['secret_id'],
+        required: ['secret_id_accessor'],
       },
     },
   },
@@ -15686,7 +15697,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = __webpack_require__(422);
 const core_1 = __webpack_require__(470);
 exports.GithubAuthMethod = (vault) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
-    yield vault.githubLogin({ token: core_1.getInput('githubToken', { required: true }) });
+    yield vault.githubLogin({
+        token: core_1.getInput('githubToken', { required: true }),
+    });
 });
 //# sourceMappingURL=githubAuthMethod.js.map
 
@@ -16741,18 +16754,18 @@ module.exports = require("crypto");
 /***/ (function(module) {
 
 /*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright (c) Microsoft Corporation.
 
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 /* global global, define, System, Reflect, Promise */
 var __extends;
@@ -17235,14 +17248,28 @@ class Command {
         return cmdStr;
     }
 }
+/**
+ * Sanitizes an input into a string so it can be passed into issueCommand safely
+ * @param input input to sanitize into a string
+ */
+function toCommandValue(input) {
+    if (input === null || input === undefined) {
+        return '';
+    }
+    else if (typeof input === 'string' || input instanceof String) {
+        return input;
+    }
+    return JSON.stringify(input);
+}
+exports.toCommandValue = toCommandValue;
 function escapeData(s) {
-    return (s || '')
+    return toCommandValue(s)
         .replace(/%/g, '%25')
         .replace(/\r/g, '%0D')
         .replace(/\n/g, '%0A');
 }
 function escapeProperty(s) {
-    return (s || '')
+    return toCommandValue(s)
         .replace(/%/g, '%25')
         .replace(/\r/g, '%0D')
         .replace(/\n/g, '%0A')
@@ -19649,11 +19676,13 @@ var ExitCode;
 /**
  * Sets env variable for this action and future actions in the job
  * @param name the name of the variable to set
- * @param val the value of the variable
+ * @param val the value of the variable. Non-string values will be converted to a string via JSON.stringify
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function exportVariable(name, val) {
-    process.env[name] = val;
-    command_1.issueCommand('set-env', { name }, val);
+    const convertedVal = command_1.toCommandValue(val);
+    process.env[name] = convertedVal;
+    command_1.issueCommand('set-env', { name }, convertedVal);
 }
 exports.exportVariable = exportVariable;
 /**
@@ -19692,12 +19721,22 @@ exports.getInput = getInput;
  * Sets the value of an output.
  *
  * @param     name     name of the output to set
- * @param     value    value to store
+ * @param     value    value to store. Non-string values will be converted to a string via JSON.stringify
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setOutput(name, value) {
     command_1.issueCommand('set-output', { name }, value);
 }
 exports.setOutput = setOutput;
+/**
+ * Enables or disables the echoing of commands into stdout for the rest of the step.
+ * Echoing is disabled by default if ACTIONS_STEP_DEBUG is not set.
+ *
+ */
+function setCommandEcho(enabled) {
+    command_1.issue('echo', enabled ? 'on' : 'off');
+}
+exports.setCommandEcho = setCommandEcho;
 //-----------------------------------------------------------------------
 // Results
 //-----------------------------------------------------------------------
@@ -19731,18 +19770,18 @@ function debug(message) {
 exports.debug = debug;
 /**
  * Adds an error issue
- * @param message error issue message
+ * @param message error issue message. Errors will be converted to string via toString()
  */
 function error(message) {
-    command_1.issue('error', message);
+    command_1.issue('error', message instanceof Error ? message.toString() : message);
 }
 exports.error = error;
 /**
  * Adds an warning issue
- * @param message warning issue message
+ * @param message warning issue message. Errors will be converted to string via toString()
  */
 function warning(message) {
-    command_1.issue('warning', message);
+    command_1.issue('warning', message instanceof Error ? message.toString() : message);
 }
 exports.warning = warning;
 /**
@@ -19800,8 +19839,9 @@ exports.group = group;
  * Saves state for current action, the state can only be retrieved by this action's post job execution.
  *
  * @param     name     name of the state to store
- * @param     value    value to store
+ * @param     value    value to store. Non-string values will be converted to a string via JSON.stringify
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function saveState(name, value) {
     command_1.issueCommand('save-state', { name }, value);
 }
@@ -20258,7 +20298,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = __webpack_require__(422);
 const core_1 = __webpack_require__(470);
 const getVaultSecret_1 = __webpack_require__(31);
-exports.run = (() => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+exports.run = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     try {
         yield core_1.group('Get Vault Secrets', getVaultSecret_1.default);
     }
@@ -20266,7 +20306,7 @@ exports.run = (() => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
         const message = error.message || 'Failed';
         core_1.setFailed(message);
     }
-}));
+});
 exports.run();
 //# sourceMappingURL=main.js.map
 
@@ -25397,7 +25437,7 @@ const githubAuthMethod_1 = __webpack_require__(375);
 const tokenAuthMethod_1 = __webpack_require__(592);
 exports.default = {
     github: githubAuthMethod_1.GithubAuthMethod,
-    token: tokenAuthMethod_1.TokenAuthMethod
+    token: tokenAuthMethod_1.TokenAuthMethod,
 };
 //# sourceMappingURL=index.js.map
 

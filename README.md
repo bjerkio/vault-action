@@ -20,6 +20,22 @@ jobs:
             - run: echo "${{ toJson(steps.vault.outputs.secret) }}" 
 ```
 
+If the data is a JSON object, it will be transformed into multiple
+objects. These are glued together as such:
+
+Example JSON:
+```
+{
+    "info": {
+        "that": {
+            "is": "deep"
+        }
+    }
+}
+```
+
+This will be transformed to `steps.vault.outputs.info_that_is`
+
 ## Input
 
 ### `endpoint`
@@ -28,11 +44,15 @@ jobs:
 
 ### `path`
 
-**Required** Path to secret from Vault 
+Path to secret from Vault 
 
 ### `authMethod`
 
 **Required** Type of authentication method. See below. 
+
+### `exportVaultToken`
+
+If this is set to `true` (default `false`) the vault token will be exported as `vault_token`
 
 ## Auth Methods
 
@@ -59,6 +79,12 @@ with:
 
 **PS:** You cannot use the built in `GITHUB_TOKEN`. This is caused by the way
 that Vault verifies the account (it needs to know _who_ is signing in.).
+
+# Documentation
+Apart from this README, you can find details and examples of using the SDK in the following places:  
+
+- [Examples](examples/)
+- [Github Actions Documentation](https://help.github.com/en/actions)
 
 # Contribute
 
