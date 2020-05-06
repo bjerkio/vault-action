@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/bjerkio/vault-action/compare/v1.1.0...v1.1.1) (2020-05-06)
+
+
+### Bug Fixes
+
+* **security:** Implicitly upgrade to @actions/http-client:^1.0.8 ([4b0969a](https://github.com/bjerkio/vault-action/commit/4b0969a9c52be9949bca3e86f1bba2be1f997c33))
+
 # [1.1.0](https://github.com/bjerkio/vault-action/compare/v1.0.2...v1.1.0) (2020-05-06)
 
 
