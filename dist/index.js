@@ -193,8 +193,9 @@ exports.default = () => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
         const { data } = yield vault.read(path, { required: true });
         transformOutput_1.transformOutput(data.data);
     }
-    const exportVaultSecret = core_1.getInput('exportVaultSecret');
-    if (exportVaultSecret && exportVaultSecret !== 'false') {
+    const exportVaultToken = core_1.getInput('exportVaultToken');
+    if (exportVaultToken && exportVaultToken !== 'false') {
+        core_1.debug(`Exporting vault secret: ${vault.token}`);
         transformOutput_1.outputData('vault_token', vault.token);
     }
 });

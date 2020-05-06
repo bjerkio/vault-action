@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/bjerkio/vault-action/compare/v1.1.1...v1.1.2) (2020-05-06)
+
+
+### Bug Fixes
+
+* Add vault token into action.yml and debug ([cab6742](https://github.com/bjerkio/vault-action/commit/cab67420a357fc87be00689806312cf21953a20d))
+* exportVaultSecret => exportVaultToken ([0981c9a](https://github.com/bjerkio/vault-action/commit/0981c9ac586b6ab83f78b246c6137f425d105a06))
+
 ## [1.1.1](https://github.com/bjerkio/vault-action/compare/v1.1.0...v1.1.1) (2020-05-06)
 
 
