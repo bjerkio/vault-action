@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/bjerkio/vault-action/compare/v1.0.2...v1.1.0) (2020-05-06)
+
+
+### Features
+
+* Output vault token ([ce7d872](https://github.com/bjerkio/vault-action/commit/ce7d872dc6f76ffac1df91a93a38e50d85163cc3))
+
 ## [1.0.2](https://github.com/bjerkio/vault-action/compare/v1.0.1...v1.0.2) (2020-03-08)
 
 
