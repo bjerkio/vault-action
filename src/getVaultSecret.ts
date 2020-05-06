@@ -8,7 +8,7 @@ export default async (): Promise<void> => {
     endpoint: getInput('endpoint', { required: true }),
   });
 
-  const authMethod = getInput('authMethod', {required: true});
+  const authMethod = getInput('authMethod', { required: true });
 
   if (authMethods[authMethod]) {
     await authMethods[authMethod](vault);

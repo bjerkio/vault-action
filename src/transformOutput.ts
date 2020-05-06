@@ -12,7 +12,6 @@ export const outputData = (name: string, value: string): void => {
 };
 
 export const transformOutput = (data: any): void => {
-
   if (typeof data !== 'object') {
     outputData('secret', data);
     return;

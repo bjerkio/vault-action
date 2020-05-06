@@ -11,9 +11,12 @@ jest.mock('node-vault', () => (): any => ({
   read: (name?: string): any => {
     return {
       data: {
-        data: name === 'STRING_VALUE' ? 'there' : {
-          hello: 'there',
-        },
+        data:
+          name === 'STRING_VALUE'
+            ? 'there'
+            : {
+                hello: 'there',
+              },
       },
     };
   },
@@ -49,10 +52,10 @@ describe('', () => {
       return 'http://test.com';
     });
     await expect(getVaultSecret()).rejects.toThrow();
-  })
+  });
   it('should export vault secret when asked', async () => {
     // @ts-ignore
-    getInput.mockImplementation((name) => {
+    getInput.mockImplementation(name => {
       if (name === 'authMethod') {
         return 'test';
       }
@@ -64,10 +67,10 @@ describe('', () => {
     await getVaultSecret();
     expect(setOutput).toHaveBeenNthCalledWith(2, 'vault_token', undefined);
     expect(getInput).toHaveBeenCalledTimes(4);
-  })
+  });
   it('should export using secret if string value', async () => {
     // @ts-ignore
-    getInput.mockImplementation((name) => {
+    getInput.mockImplementation(name => {
       if (name === 'authMethod') {
         return 'test';
       }
@@ -81,7 +84,7 @@ describe('', () => {
   });
   it('should not export anything if path is missing', async () => {
     // @ts-ignore
-    getInput.mockImplementation((name) => {
+    getInput.mockImplementation(name => {
       if (name === 'authMethod') {
         return 'test';
       }
@@ -95,7 +98,7 @@ describe('', () => {
   });
   it('should not export vault secret when asked', async () => {
     // @ts-ignore
-    getInput.mockImplementation((name) => {
+    getInput.mockImplementation(name => {
       if (name === 'authMethod') {
         return 'test';
       }
