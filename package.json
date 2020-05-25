@@ -23,7 +23,7 @@
     "prettier": "~2.0.5",
     "rimraf": "~3.0.2",
     "ts-jest": "~25.5.0",
-    "ts-loader": "^7.0.4",
+    "ts-loader": "^7.0.5",
     "tsutils": "~3.17.0",
     "typescript": "~3.8.3",
     "webpack": "^4.43.0",
