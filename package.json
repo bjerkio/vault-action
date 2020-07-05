@@ -18,6 +18,7 @@
     "eslint-config-prettier": "~6.11.0",
     "eslint-plugin-jest": "~23.17.1",
     "faker": "^4.1.0",
+    "husky": "^4.2.5",
     "jest": "~26.0.1",
     "nock": "^13.0.0",
     "prettier": "~2.0.5",
@@ -38,6 +39,9 @@
     "test": "jest --coverage src/**/*",
     "test:watch": "jest --watch",
     "codecov": "codecov"
+  },
+  "husky": {
+    "pre-commit": "yarn lint && yarn test && yarn build && git add dist/"
   },
   "author": "Bjerk AS <office@bjerk.io>",
   "license": "Apache-2.0",
