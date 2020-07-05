@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/bjerkio/vault-action/compare/v1.1.2...v1.1.3) (2020-07-05)
+
+
+### Bug Fixes
+
+* **transformOuput:** Add setSecret to outputData ([731590a](https://github.com/bjerkio/vault-action/commit/731590aadeb641e826da977df69d98a006c23fa4)), closes [#124](https://github.com/bjerkio/vault-action/issues/124)
+
 ## [1.1.2](https://github.com/bjerkio/vault-action/compare/v1.1.1...v1.1.2) (2020-05-06)
 
 

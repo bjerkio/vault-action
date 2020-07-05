@@ -19,7 +19,13 @@ module.exports =
 /******/ 		};
 /******/
 /******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		var threw = true;
+/******/ 		try {
+/******/ 			modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 			threw = false;
+/******/ 		} finally {
+/******/ 			if(threw) delete installedModules[moduleId];
+/******/ 		}
 /******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
@@ -2006,9 +2012,11 @@ module.exports = request;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.transformOutput = exports.outputData = void 0;
 const core_1 = __webpack_require__(470);
 const flat = __webpack_require__(84);
 exports.outputData = (name, value) => {
+    core_1.setSecret(value);
     core_1.setOutput(name || 'secret', value);
     core_1.debug(`✔ ${name} => outputs.${name}`);
 };
@@ -15695,6 +15703,7 @@ module.exports = function extend() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GithubAuthMethod = void 0;
 const tslib_1 = __webpack_require__(422);
 const core_1 = __webpack_require__(470);
 exports.GithubAuthMethod = (vault) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
@@ -16791,6 +16800,7 @@ var __importStar;
 var __importDefault;
 var __classPrivateFieldGet;
 var __classPrivateFieldSet;
+var __createBinding;
 (function (factory) {
     var root = typeof global === "object" ? global : typeof self === "object" ? self : typeof this === "object" ? this : {};
     if (typeof define === "function" && define.amd) {
@@ -16898,9 +16908,17 @@ var __classPrivateFieldSet;
         }
     };
 
-    __exportStar = function (m, exports) {
-        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    __exportStar = function(m, exports) {
+        for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
     };
+
+    __createBinding = Object.create ? (function(o, m, k, k2) {
+        if (k2 === undefined) k2 = k;
+        Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    }) : (function(o, m, k, k2) {
+        if (k2 === undefined) k2 = k;
+        o[k2] = m[k];
+    });
 
     __values = function (o) {
         var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
@@ -16980,11 +16998,17 @@ var __classPrivateFieldSet;
         return cooked;
     };
 
+    var __setModuleDefault = Object.create ? (function(o, v) {
+        Object.defineProperty(o, "default", { enumerable: true, value: v });
+    }) : function(o, v) {
+        o["default"] = v;
+    };
+
     __importStar = function (mod) {
         if (mod && mod.__esModule) return mod;
         var result = {};
-        if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-        result["default"] = mod;
+        if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+        __setModuleDefault(result, mod);
         return result;
     };
 
@@ -17005,7 +17029,7 @@ var __classPrivateFieldSet;
         }
         privateMap.set(receiver, value);
         return value;
-    }
+    };
 
     exporter("__extends", __extends);
     exporter("__assign", __assign);
@@ -17016,6 +17040,7 @@ var __classPrivateFieldSet;
     exporter("__awaiter", __awaiter);
     exporter("__generator", __generator);
     exporter("__exportStar", __exportStar);
+    exporter("__createBinding", __createBinding);
     exporter("__values", __values);
     exporter("__read", __read);
     exporter("__spread", __spread);
@@ -20296,6 +20321,7 @@ module.exports = function rules() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.run = void 0;
 const tslib_1 = __webpack_require__(422);
 const core_1 = __webpack_require__(470);
 const getVaultSecret_1 = __webpack_require__(31);
@@ -24677,6 +24703,7 @@ module.exports = {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TokenAuthMethod = void 0;
 const tslib_1 = __webpack_require__(422);
 const core_1 = __webpack_require__(470);
 exports.TokenAuthMethod = (vault) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
@@ -24883,7 +24910,7 @@ let debug = __webpack_require__(790)('node-vault');
 let tv4 = __webpack_require__(702);
 let commands = __webpack_require__(265);
 let mustache = __webpack_require__(174);
-const rp = __webpack_require__(117);
+let rp = __webpack_require__(117);
 
 class VaultError extends Error {}
 
@@ -24903,12 +24930,21 @@ module.exports = (config = {}) => {
   tv4 = config.tv4 || tv4;
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
-  const requestPromise = (config['request-promise'] || rp).defaults({
+
+  const rpDefaults = {
     json: true,
     resolveWithFullResponse: true,
     simple: false,
     strictSSL: !process.env.VAULT_SKIP_VERIFY,
-  });
+  };
+
+  if (config.rpDefaults) {
+    Object.keys(config.rpDefaults).forEach(key => {
+      rpDefaults[key] = config.rpDefaults[key];
+    });
+  }
+
+  rp = (config['request-promise'] || rp).defaults(rpDefaults);
   const client = {};
 
   function handleVaultResponse(response) {
@@ -24939,6 +24975,7 @@ module.exports = (config = {}) => {
   client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
   client.noCustomHTTPVerbs = config.noCustomHTTPVerbs || false;
+  client.namespace = config.namespace || process.env.VAULT_NAMESPACE;
 
   const requestSchema = {
     type: 'object',
@@ -24964,10 +25001,13 @@ module.exports = (config = {}) => {
     if (typeof client.token === 'string' && client.token.length) {
       options.headers['X-Vault-Token'] = options.headers['X-Vault-Token'] || client.token;
     }
+    if (typeof client.namespace === 'string' && client.namespace.length) {
+      options.headers['X-Vault-Namespace'] = client.namespace;
+    }
     options.uri = uri;
     debug(options.method, uri);
     if (options.json) debug(options.json);
-    return requestPromise(options).then(client.handleVaultResponse);
+    return rp(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
