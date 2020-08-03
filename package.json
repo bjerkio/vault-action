@@ -14,7 +14,7 @@
     "@typescript-eslint/parser": "~3.6.1",
     "@zeit/ncc": "^0.22.3",
     "codecov": "^3.7.1",
-    "eslint": "~7.4.0",
+    "eslint": "~7.6.0",
     "eslint-config-prettier": "~6.11.0",
     "eslint-plugin-jest": "~23.18.0",
     "faker": "^4.1.0",
