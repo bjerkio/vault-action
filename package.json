@@ -46,7 +46,7 @@
   "author": "Bjerk AS <office@bjerk.io>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "@actions/http-client": "^1.0.8",
     "flat": "^5.0.0",
