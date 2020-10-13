@@ -4319,10 +4319,10 @@ node-notifier@^7.0.0:
     uuid "^7.0.3"
     which "^2.0.2"
 
-node-vault@^0.9.18:
-  version "0.9.18"
-  resolved "https://registry.yarnpkg.com/node-vault/-/node-vault-0.9.18.tgz#343a0a94daf8a92d21f1255c640651475555a9bb"
-  integrity sha512-fYLRreig5zKcqxr5tUR+KWMwQy+/KQUI6qVj6jSuePmJg9Tv4YRFP6MrwlujVTaxUBzJLylkRGnW224Q0KkrPA==
+node-vault@^0.9.20:
+  version "0.9.20"
+  resolved "https://registry.yarnpkg.com/node-vault/-/node-vault-0.9.20.tgz#2222517bcaf4b06c3fa9abd1a2fc90ee63680a10"
+  integrity sha512-f0K/pIMgy4uRYuwBKrye6ENk5VYhp2Gjn4tUwX5ZYEIwni7dr8ZYv8td7qNx6ED+GnaLKOiKTjaV+Zn3auJWEw==
   dependencies:
     debug "3.1.0"
     mustache "^2.2.1"
