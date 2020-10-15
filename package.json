@@ -48,7 +48,7 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@actions/http-client": "^1.0.8",
+    "@actions/http-client": "^1.0.9",
     "flat": "^5.0.0",
     "node-vault": "^0.9.18",
     "tslib": "~2.0.0"
