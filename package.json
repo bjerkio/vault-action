@@ -49,7 +49,7 @@
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "@actions/http-client": "^1.0.9",
-    "flat": "^5.0.0",
+    "flat": "^5.0.2",
     "node-vault": "^0.9.20",
     "tslib": "~2.0.0"
   }
