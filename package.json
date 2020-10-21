@@ -28,7 +28,7 @@
     "tsutils": "~3.17.0",
     "typescript": "~3.9.7",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^4.1.0"
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
