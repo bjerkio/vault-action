@@ -3,7 +3,7 @@
   "version": "1.1.6",
   "description": "Export secrets from Vault into Github Actions",
   "engines": {
-    "node": ">= 12.13 <13"
+    "node": "14^"
   },
   "devDependencies": {
     "@types/faker": "^5.1.2",
