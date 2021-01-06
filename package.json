@@ -51,6 +51,6 @@
     "@actions/http-client": "^1.0.9",
     "flat": "^5.0.2",
     "node-vault": "^0.9.21",
-    "tslib": "~2.0.3"
+    "tslib": "~2.1.0"
   }
 }
