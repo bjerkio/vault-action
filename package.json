@@ -6,7 +6,7 @@
     "node": ">=14.15"
   },
   "devDependencies": {
-    "@types/faker": "^5.1.5",
+    "@types/faker": "^5.1.7",
     "@types/flat": "^5.0.1",
     "@types/jest": "~26.0.20",
     "@types/node": "~12.19.15",
