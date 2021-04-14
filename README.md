@@ -7,6 +7,8 @@
 
 A Github Action that pulls secrets from HashiCrop Vault.
 
+**This Github Action is deprecated**: We encurage migrating to `hashicorp/vault-action`. Read more about it here: https://github.com/bjerkio/vault-action/issues/393
+
 ## Example Usage
 
 ```
