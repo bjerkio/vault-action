@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/bjerkio/vault-action/compare/v1.1.3...v1.2.0) (2021-04-14)
+
+
+### Features
+
+* Add deprecation notice ([c0ea528](https://github.com/bjerkio/vault-action/commit/c0ea528541d6ba5bb786165540ed6eda0132ed07))
+
 ## [1.1.3](https://github.com/bjerkio/vault-action/compare/v1.1.2...v1.1.3) (2020-07-05)
 
 
